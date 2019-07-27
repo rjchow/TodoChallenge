@@ -1,7 +1,7 @@
 import { readdirSync } from "fs";
 import { getLogger } from "./util/logger";
 
-const { trace } = getLogger("sayHello");
+const { trace } = getLogger("index");
 
 /**
  * Walks through all files at the given path, i.e recurses into all
@@ -29,6 +29,10 @@ export const traverseDirectory = (path: string): string[] => {
 
   trace(`Current list at ${path}: ${listOfFiles}`);
   return listOfFiles;
+};
+
+export const hasTodo = (filePath: string): boolean => {
+  return true;
 };
 
 export default traverseDirectory;
