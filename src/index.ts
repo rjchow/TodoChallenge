@@ -1,7 +1,7 @@
 import { readdirSync } from "fs";
 import { getLogger } from "./util/logger";
 
-const { trace } = getLogger("sayHello");
+const { info } = getLogger("index");
 
 /**
  * Walks through all files at the given path, i.e recurses into all
@@ -9,26 +9,21 @@ const { trace } = getLogger("sayHello");
  * @param path path string
  */
 export const traverseDirectory = (path: string): string[] => {
-  let listOfFiles: string[] = [];
-  trace(`Was called with ${path}`);
+  info(`Was called with ${path}`);
 
-  const entitiesInDirectory = readdirSync(path, { withFileTypes: true });
-  trace(`Entities:${path}: entitiesInDirectory`);
-  const subDirectories = entitiesInDirectory.filter(entity => entity.isDirectory());
+  const allEntitiesInDirectory = readdirSync(path, { withFileTypes: true });
 
-  const subDirectoriesPaths = subDirectories.map(subDir => subDir.name).map(dirName => [path, dirName].join("/"));
+  const subDirectoriesInThisDirectory = allEntitiesInDirectory
+    .filter(entity => entity.isDirectory())
+    .map(subDir => `${path}/${subDir.name}`);
 
-  // recursion into subdirectories
-  const filesInSubdirectories = subDirectoriesPaths.map(subDirectoryPath => traverseDirectory(subDirectoryPath));
-  listOfFiles = listOfFiles.concat(...filesInSubdirectories);
+  const filesInThisDirectory = allEntitiesInDirectory
+    .filter(entity => entity.isFile())
+    .map(file => `${path}/${file.name}`);
 
-  const files = entitiesInDirectory.filter(entity => entity.isFile());
-  trace("Files:", files);
-
-  listOfFiles = listOfFiles.concat(files.map(file => [path, file.name].join("/")));
-
-  trace(`Current list at ${path}: ${listOfFiles}`);
-  return listOfFiles;
+  // recurse into subdirectories and join results in a flat array
+  const filesInSubdirectories = subDirectoriesInThisDirectory.map(traverseDirectory).flat();
+  return [...filesInSubdirectories, ...filesInThisDirectory];
 };
 
 export default traverseDirectory;
