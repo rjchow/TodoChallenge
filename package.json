@@ -24,8 +24,8 @@
     "docs": "documentation readme src --section=API",
     "postdocs": "git add README.md",
     "clean": "rimraf dist",
-    "prebuild": "npm run docs && npm run clean",
-    "build": "tsc --emitDeclarationOnly && babel src -d dist --ignore src/**/*.spec.js,src/**/*.test.js -x .js,.ts,.tsx",
+    "prebuild": "npm run clean",
+    "build": "tsc --lib ESNext --emitDeclarationOnly && babel src -d dist --ignore src/**/*.spec.js,src/**/*.test.js -x .js,.ts,.tsx",
     "preversion": "npm run lint && npm test && npm run build",
     "semantic-release": "semantic-release"
   },

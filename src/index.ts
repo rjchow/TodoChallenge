@@ -1,4 +1,4 @@
-import { readdirSync } from "fs";
+import { readdirSync, readFileSync } from "fs";
 import { getLogger } from "./util/logger";
 
 const { info } = getLogger("index");
@@ -22,8 +22,22 @@ export const traverseDirectory = (path: string): string[] => {
     .map(file => `${path}/${file.name}`);
 
   // recurse into subdirectories and join results in a flat array
+  info(subDirectoriesInThisDirectory);
   const filesInSubdirectories = subDirectoriesInThisDirectory.map(traverseDirectory).flat();
   return [...filesInSubdirectories, ...filesInThisDirectory];
 };
 
-export default traverseDirectory;
+export const fileHasTodo = (path: string): boolean => {
+  return (
+    readFileSync(path)
+      .toString()
+      .indexOf("TODO") >= 0
+  );
+};
+
+export const displayTodos = (path: string): void => {
+  const allFiles = traverseDirectory(path);
+  const filesWithTodos = allFiles.filter(fileHasTodo);
+
+  console.log(filesWithTodos);
+};
