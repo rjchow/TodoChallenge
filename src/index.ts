@@ -35,6 +35,10 @@ export const fileHasTodo = (path: string): boolean => {
   );
 };
 
+/**
+ * Takes a path and displays a list of files that have TODOs in them
+ * @param path string path to directory that needs to be checked
+ */
 export const displayTodos = (path: string): void => {
   const allFiles = traverseDirectory(path);
   const filesWithTodos = allFiles.filter(fileHasTodo);
